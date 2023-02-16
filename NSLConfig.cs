@@ -38,6 +38,10 @@ namespace NeosSubprocessLauncher
             /// 標準出力をログとして記録する
             /// </summary>
             public bool UseLog { get; set; }
+            /// <summary>
+            /// neos終了時にプロセスを終了するか
+            /// </summary>
+            public bool KillOnQuit { get; set; }
         }
 
         public ProcessEntry[] Entries { get; set; } = new ProcessEntry[0];
@@ -65,7 +69,8 @@ namespace NeosSubprocessLauncher
                     Arguments = "/c dir",
                     WorkingDirectory = NeosSubprocessLauncher.BaseDirPath,
                     NoGUI = true,
-                    UseLog = true
+                    UseLog = true,
+                    KillOnQuit = true,
                 },
                 new ProcessEntry
                 {

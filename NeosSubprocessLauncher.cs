@@ -34,7 +34,17 @@ namespace NeosSubprocessLauncher
         {
             foreach (var entry in _launchedEntries)
             {
-                entry.Process.Close();
+                if (entry.ProcessEntry.KillOnQuit && !entry.Process.HasExited)
+                {
+                    try
+                    {
+                        KillProcessAndChildrens(entry.Process.Id);
+                    }
+                    catch (Exception ex)
+                    {
+                        Error($"Failed to kill process: {ex.Message}");
+                    }
+                }
                 if (entry.LogWriter != null)
                 {
                     entry.LogWriter.Close();
@@ -125,7 +135,7 @@ namespace NeosSubprocessLauncher
             }
             catch (Exception ex)
             {
-                Error($"Failed to create directory: {ex}");
+                Error($"Failed to create directory: {ex.Message}");
             }
         }
 
@@ -143,7 +153,7 @@ namespace NeosSubprocessLauncher
                 }
                 catch (Exception ex)
                 {
-                    Error($"Failed to save default config: {ex}");
+                    Error($"Failed to save default config: {ex.Message}");
                 }
                 return sample;
             }
@@ -156,8 +166,23 @@ namespace NeosSubprocessLauncher
             }
             catch (Exception ex)
             {
-                Error($"Failed to load config: {ex}");
+                Error($"Failed to load config: {ex.Message}");
                 return new NSLConfig();
+            }
+        }
+
+        private static void KillProcessAndChildrens(int pid)
+        {
+            // HACK: 下記URLのやり方でやりたいが，System.Managementを上手く参照できない
+            // https://stackoverflow.com/questions/30249873/process-kill-doesnt-seem-to-kill-the-process
+
+            using (var killer = new Process())
+            {
+                killer.StartInfo.FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "taskkill.exe");
+                killer.StartInfo.Arguments = $"/f /t /pid {pid}";
+                killer.StartInfo.UseShellExecute = false;
+                killer.StartInfo.CreateNoWindow = true;
+                killer.Start();
             }
         }
     }
