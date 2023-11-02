@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace NeosSubprocessLauncher
 {
@@ -53,16 +54,16 @@ namespace NeosSubprocessLauncher
 
         public static NSLConfig Deserialize(string json)
         {
-            return JsonConvert.DeserializeObject<NSLConfig>(json);
+            return JsonConvert.DeserializeObject<NSLConfig>(json) ?? throw new ArgumentException("Invalid json");
         }
 
         public static NSLConfig GetSampleConfig()
         {
-            var config = new NSLConfig();
-            config.Entries = new ProcessEntry[2]
+            var config = new NSLConfig
             {
-                new ProcessEntry
-                {
+                Entries = new ProcessEntry[2]
+            {
+                new() {
                     IsEnabled = true,
                     Name = "CUI Sample",
                     Path = "C:\\Windows\\system32\\cmd.exe",
@@ -72,13 +73,13 @@ namespace NeosSubprocessLauncher
                     UseLog = true,
                     KillOnQuit = true,
                 },
-                new ProcessEntry
-                {
+                new() {
                     IsEnabled = true,
                     Name = "GUI Sample",
                     Path = "C:\\Windows\\system32\\notepad.exe",
                     Minimized = true,
                 }
+            }
             };
             return config;
         }

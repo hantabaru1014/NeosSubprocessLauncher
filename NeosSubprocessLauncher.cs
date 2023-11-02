@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using NeosModLoader;
+using ResoniteModLoader;
 using FrooxEngine;
 using System.IO;
 using System.Diagnostics;
 
 namespace NeosSubprocessLauncher
 {
-    public class NeosSubprocessLauncher : NeosMod
+    public class NeosSubprocessLauncher : ResoniteMod
     {
         public override string Name => "NeosSubprocessLauncher";
         public override string Author => "hantabaru1014";
-        public override string Version => "1.0.0";
+        public override string Version => "2.0.0";
         public override string Link => "https://github.com/hantabaru1014/NeosSubprocessLauncher";
 
         public static readonly string BaseDirPath = Path.Combine(Engine.Current.AppPath, "NeosSubprocessLauncher");
